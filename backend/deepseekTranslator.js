@@ -284,7 +284,7 @@ ${textToTranslate}
 3. 直接输出翻译后的中文内容`;
 
             content_cn = await this.callDeepSeek(prompt, 1200);
-            await this.sleep(100);
+            await this.sleep(50); // 减少延迟,加快翻译速度
           }
         }
 
@@ -297,16 +297,6 @@ ${textToTranslate}
         translated.push({
           ...comment,
           content_cn: this.fallbackTranslate(comment.content)
-        });
-      }
-    }
-
-    // 剩余评论不翻译
-    if (comments.length > maxCount) {
-      for (let i = maxCount; i < comments.length; i++) {
-        translated.push({
-          ...comments[i],
-          content_cn: null
         });
       }
     }

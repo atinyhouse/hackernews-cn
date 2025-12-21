@@ -65,8 +65,8 @@ async function generateStaticData() {
         if (comments.length > 0) {
           console.log(`  获取到 ${comments.length} 条评论`);
 
-          // 翻译评论（翻译前20条）
-          const translatedComments = await translator.translateComments(comments, 20);
+          // 翻译所有评论
+          const translatedComments = await translator.translateComments(comments, comments.length);
 
           // 生成摘要
           if (!abstract) {
