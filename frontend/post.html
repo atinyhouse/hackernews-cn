@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帖子详情 - HackerNews 中文热议榜</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: #f6f8fa;
+      color: #24292e;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .main-content {
+      margin-top: 2rem;
+      padding-bottom: 3rem;
+    }
+
+    .post-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .post-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #24292e;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .post-title-en {
+      font-size: 1.2rem;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 1rem 0;
+      border-bottom: 2px solid #e1e4e8;
+      margin-bottom: 1.5rem;
+      color: #586069;
+      font-size: 0.95rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .post-url {
+      color: #667eea;
+      text-decoration: none;
+      word-break: break-all;
+      font-size: 0.9rem;
+    }
+
+    .post-url:hover {
+      text-decoration: underline;
+    }
+
+    .summary-section {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .summary-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .summary-content {
+      font-size: 1.05rem;
+      color: #24292e;
+      line-height: 1.8;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .comments-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #24292e;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comment-thread {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e1e4e8;
+    }
+
+    .comment-thread:last-child {
+      border-bottom: none;
+    }
+
+    /* 一级评论 - 最突出 */
+    .comment {
+      background: linear-gradient(to right, #f6f8fa, #ffffff);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .comment:hover {
+      transform: translateX(2px);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed #e1e4e8;
+    }
+
+    .comment-author {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comment-author::before {
+      content: "👤";
+      font-size: 0.9rem;
+    }
+
+    .comment-time {
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .comment-content {
+      color: #24292e;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .comment-content-cn {
+      color: #24292e;
+      line-height: 1.8;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .comment-content-en {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px dotted #dee2e6;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* 回复区域 */
+    .comment-replies {
+      margin-top: 1.5rem;
+      padding-left: 2.5rem;
+      position: relative;
+    }
+
+    /* 回复连接线 */
+    .comment-replies::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, #667eea 0%, #e1e4e8 100%);
+      border-radius: 3px;
+    }
+
+    /* 一级回复 */
+    .comment-replies > .comment {
+      margin-bottom: 1.2rem;
+      background: #ffffff;
+      border-left: 3px solid #a0aec0;
+      padding: 1.2rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .comment-replies > .comment .comment-author {
+      font-size: 0.95rem;
+      color: #a0aec0;
+    }
+
+    .comment-replies > .comment .comment-author::before {
+      content: "↳";
+      font-size: 1.1rem;
+    }
+
+    /* 二级回复 */
+    .comment-replies .comment-replies {
+      padding-left: 2rem;
+      margin-top: 1rem;
+    }
+
+    .comment-replies .comment-replies::before {
+      width: 2px;
+      background: linear-gradient(to bottom, #a0aec0 0%, #e1e4e8 100%);
+    }
+
+    .comment-replies .comment-replies > .comment {
+      background: #fafbfc;
+      border-left-color: #cbd5e0;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-replies .comment-replies > .comment .comment-author {
+      font-size: 0.9rem;
+      color: #cbd5e0;
+    }
+
+    .comment-replies .comment-replies > .comment .comment-author::before {
+      content: "↳↳";
+      font-size: 0.9rem;
+    }
+
+    /* 三级及以上回复 */
+    .comment-replies .comment-replies .comment-replies {
+      padding-left: 1.5rem;
+    }
+
+    .comment-replies .comment-replies .comment-replies::before {
+      width: 1px;
+      background: #e1e4e8;
+    }
+
+    .comment-replies .comment-replies .comment-replies > .comment {
+      background: #f8f9fa;
+      border-left-color: #e1e4e8;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .comment-replies .comment-replies .comment-replies > .comment .comment-author {
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .no-comments {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      border-left: 4px solid #c33;
+    }
+
+    @media (max-width: 768px) {
+      .post-title {
+        font-size: 1.4rem;
+      }
+
+      .post-meta {
+        gap: 1rem;
+      }
+
+      .comment-replies {
+        padding-left: 1.5rem;
+      }
+
+      .comment-replies::before {
+        width: 2px;
+      }
+
+      .comment-replies .comment-replies {
+        padding-left: 1rem;
+      }
+
+      .comment-replies .comment-replies::before {
+        width: 1px;
+      }
+
+      .comment {
+        padding: 1rem;
+      }
+
+      .comment-replies > .comment {
+        padding: 0.9rem;
+      }
+
+      .comment-replies .comment-replies > .comment {
+        padding: 0.8rem;
+      }
+
+      .summary-section {
+        padding: 1rem;
+      }
+
+      .comment-author {
+        font-size: 0.9rem;
+      }
+
+      .comment-content,
+      .comment-content-cn {
+        font-size: 0.95rem;
+      }
+
+      .comment-content-en {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="back-btn">
+        <span>←</span>
+        <span>Back to Home</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content container">
+    <div id="loadingIndicator" class="loading">
+      <div class="loading-spinner"></div>
+      <div>Loading post details...</div>
+    </div>
+
+    <div id="errorMessage" style="display: none;"></div>
+
+    <div id="postDetail" style="display: none;">
+      <div class="post-card">
+        <h1 class="post-title" id="postTitle"></h1>
+        <div class="post-title-en" id="postTitleEn"></div>
+
+        <div class="post-meta" id="postMeta"></div>
+
+        <div id="postUrl"></div>
+      </div>
+
+      <div class="summary-section" id="summarySection">
+        <h2 class="summary-title">
+          <span>📝</span>
+          <span>Summary</span>
+        </h2>
+        <div class="summary-content" id="summaryContent"></div>
+      </div>
+
+      <div class="comments-section">
+        <h2 class="section-title">
+          <span>💬</span>
+          <span id="commentsCount">Comments</span>
+        </h2>
+        <div id="commentsList"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const DATA_FILE = './data/posts.json';
+    let allPosts = [];
+
+    // 从 URL 获取帖子 ID
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+
+    if (!postId) {
+      showError('未指定帖子 ID');
+    } else {
+      loadPostDetail(postId);
+    }
+
+    // 格式化时间
+    function formatTime(timestamp) {
+      const now = Date.now();
+      const diff = now - timestamp;
+
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+
+      if (minutes < 60) return `${minutes}分钟前`;
+      if (hours < 24) return `${hours}小时前`;
+      return `${days}天前`;
+    }
+
+    // HTML 转义
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 加载帖子详情
+    async function loadPostDetail(id) {
+      try {
+        // 首先加载数据
+        const response = await fetch(DATA_FILE);
+        const data = await response.json();
+
+        allPosts = data.posts.map((post, index) => ({
+          ...post,
+          id: index + 1
+        }));
+
+        const post = allPosts.find(p => p.id === parseInt(id));
+        if (!post) {
+          showError('帖子不存在');
+          return;
+        }
+
+        const comments = post.comments || [];
+        renderPost(post, comments);
+
+      } catch (error) {
+        console.error('加载详情失败:', error);
+        showError('无法加载数据文件');
+      } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+      }
+    }
+
+    // 渲染帖子
+    function renderPost(post, comments) {
+      // 标题
+      const titleCn = post.title_cn || post.title;
+      document.getElementById('postTitle').textContent = titleCn;
+      document.getElementById('postTitleEn').textContent = post.title;
+
+      // 元信息
+      const timeAgo = formatTime(post.created_at);
+      document.getElementById('postMeta').innerHTML = `
+        <div class="meta-item">
+          <span>👍</span>
+          <span>${post.points} points</span>
+        </div>
+        <div class="meta-item">
+          <span>💬</span>
+          <span>${post.comment_count} comments</span>
+        </div>
+        <div class="meta-item">
+          <span>👤</span>
+          <span>${escapeHtml(post.author)}</span>
+        </div>
+        <div class="meta-item">
+          <span>🕐</span>
+          <span>${timeAgo}</span>
+        </div>
+      `;
+
+      // URL
+      document.getElementById('postUrl').innerHTML = `
+        <a href="${post.url}" target="_blank" class="post-url">🔗 Visit original: ${post.url}</a>
+      `;
+
+      // 摘要
+      if (post.abstract || post.content) {
+        const summary = post.abstract || post.content.substring(0, 300) + '...';
+        document.getElementById('summaryContent').textContent = summary;
+      } else if (comments.length > 0) {
+        // 如果没有内容，用前几条评论生成摘要
+        const topComments = comments.slice(0, 3).map(c => c.content).join(' ');
+        const summary = topComments.substring(0, 300) + '...';
+        document.getElementById('summaryContent').textContent = '讨论要点：' + summary;
+      } else {
+        document.getElementById('summarySection').style.display = 'none';
+      }
+
+      // 评论
+      document.getElementById('commentsCount').textContent = `Comments (${comments.length})`;
+
+      if (comments.length === 0) {
+        document.getElementById('commentsList').innerHTML = '<div class="no-comments">No comments yet</div>';
+      } else {
+        const commentTree = buildCommentTree(comments);
+        document.getElementById('commentsList').innerHTML = renderComments(commentTree);
+      }
+
+      document.getElementById('postDetail').style.display = 'block';
+    }
+
+    // 构建评论树
+    function buildCommentTree(comments) {
+      const commentMap = {};
+      const rootComments = [];
+
+      comments.forEach(comment => {
+        commentMap[comment.hn_comment_id] = {
+          ...comment,
+          children: []
+        };
+      });
+
+      comments.forEach(comment => {
+        if (comment.parent_id && commentMap[comment.parent_id]) {
+          commentMap[comment.parent_id].children.push(commentMap[comment.hn_comment_id]);
+        } else {
+          rootComments.push(commentMap[comment.hn_comment_id]);
+        }
+      });
+
+      return rootComments;
+    }
+
+    // 渲染评论树（thread 结构）
+    function renderComments(comments, isReply = false) {
+      return comments.map(comment => {
+        const timeAgo = formatTime(comment.created_at);
+
+        // 优化中英文显示
+        const contentDisplay = comment.content_cn
+          ? `<div class="comment-content-cn">${escapeHtml(comment.content_cn)}</div>
+             <div class="comment-content-en">${escapeHtml(comment.content)}</div>`
+          : `<div class="comment-content">${escapeHtml(comment.content)}</div>`;
+
+        // 递归渲染子评论（回复）
+        const repliesHtml = comment.children.length > 0
+          ? `<div class="comment-replies">${renderComments(comment.children, true)}</div>`
+          : '';
+
+        // 根评论用 thread 包裹，回复则不需要额外包裹
+        if (!isReply) {
+          return `
+            <div class="comment-thread">
+              <div class="comment">
+                <div class="comment-header">
+                  <span class="comment-author">${escapeHtml(comment.author)}</span>
+                  <span class="comment-time">${timeAgo}</span>
+                </div>
+                ${contentDisplay}
+              </div>
+              ${repliesHtml}
+            </div>
+          `;
+        } else {
+          return `
+            <div class="comment">
+              <div class="comment-header">
+                <span class="comment-author">${escapeHtml(comment.author)}</span>
+                <span class="comment-time">${timeAgo}</span>
+              </div>
+              ${contentDisplay}
+            </div>
+            ${repliesHtml}
+          `;
+        }
+      }).join('');
+    }
+
+    // 显示错误
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.className = 'error';
+      errorDiv.textContent = '❌ ' + message;
+      errorDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
