@@ -189,7 +189,8 @@ ${context}
 
     let result = text;
     for (const [en, cn] of Object.entries(translations)) {
-      const regex = new RegExp(en, 'gi');
+      // 使用单词边界 \b 确保只替换完整的单词，避免误替换
+      const regex = new RegExp(`\\b${en}\\b`, 'gi');
       result = result.replace(regex, cn);
     }
 

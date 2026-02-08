@@ -83,7 +83,8 @@ class SimpleTranslationService {
 
     // 应用常见翻译
     for (const [en, cn] of Object.entries(this.commonTranslations)) {
-      const regex = new RegExp(en, 'gi');
+      // 使用单词边界 \b 确保只替换完整的单词，避免误替换
+      const regex = new RegExp(`\\b${en}\\b`, 'gi');
       translated = translated.replace(regex, cn);
     }
 
