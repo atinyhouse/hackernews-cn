@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         run: |
           cd backend
           npm install
@@ -33,15 +33,25 @@ jobs:
           cd backend
           node generate-static-data.js
 
-      - name: Copy data to frontend
+      - name: Copy data to frontend-react
         run: |
-          mkdir -p frontend/data
-          cp backend/output/*.json frontend/data/
+          mkdir -p frontend-react/public/data
+          cp backend/output/*.json frontend-react/public/data/
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend-react
+          npm install
+
+      - name: Build React app
+        run: |
+          cd frontend-react
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend
+          publish_dir: ./frontend-react/dist
           publish_branch: gh-pages
-          commit_message: 'Update HackerNews data'
+          commit_message: 'Update HackerNews data and deploy React app'

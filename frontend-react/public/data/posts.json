@@ -1,0 +1,42 @@
+{
+  "lastUpdate": 1707394800000,
+  "posts": [
+    {
+      "title": "Show HN: I built a tool to help developers",
+      "title_cn": "展示HN：我构建了一个帮助开发者的工具",
+      "url": "https://example.com",
+      "points": 250,
+      "author": "testuser",
+      "created_at": 1707390000000,
+      "abstract": "这是一个非常有用的开发工具，可以帮助提高生产力。",
+      "comments": [
+        {
+          "hn_comment_id": "1",
+          "parent_id": null,
+          "author": "user1",
+          "content": "This is great! How did you build it?",
+          "content_cn": "太棒了！你是怎么构建的？",
+          "created_at": 1707391000000
+        },
+        {
+          "hn_comment_id": "2",
+          "parent_id": "1",
+          "author": "testuser",
+          "content": "Thanks! I used React and TypeScript.",
+          "content_cn": "谢谢！我使用了React和TypeScript。",
+          "created_at": 1707392000000
+        }
+      ]
+    },
+    {
+      "title": "New JavaScript Framework Released",
+      "title_cn": "新的JavaScript框架发布",
+      "url": "https://example.com/framework",
+      "points": 180,
+      "author": "developer",
+      "created_at": 1707385000000,
+      "abstract": "一个全新的JavaScript框架，专注于性能和开发体验。",
+      "comments": []
+    }
+  ]
+}
