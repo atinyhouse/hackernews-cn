@@ -8,7 +8,7 @@ import { formatTime, buildCommentTree } from '../utils/helpers';
 const { Content } = Layout;
 const { Title, Text, Link } = Typography;
 
-const DATA_FILE = '/data/posts.json';
+const DATA_FILE = import.meta.env.BASE_URL + 'data/posts.json';
 
 export default function PostDetailPage() {
   const { id } = useParams();

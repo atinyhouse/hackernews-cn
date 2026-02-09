@@ -7,7 +7,7 @@ import { formatNumber } from '../utils/helpers';
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const DATA_FILE = '/data/posts.json';
+const DATA_FILE = import.meta.env.BASE_URL + 'data/posts.json';
 
 export default function HomePage() {
   const [allPosts, setAllPosts] = useState([]);
