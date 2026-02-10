@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设计风格预览 - Design Playground</title>
+  <link rel="stylesheet" href="https://unpkg.com/@douyinfe/semi-ui@latest/dist/css/semi.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .styles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .style-preview {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    .style-preview:hover {
+      transform: translateY(-5px);
+    }
+
+    .style-title {
+      padding: 20px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .style-title h3 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .style-title p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .preview-area {
+      padding: 20px;
+      min-height: 400px;
+    }
+
+    .style-footer {
+      padding: 15px 20px;
+      background: #f7f8fa;
+      text-align: center;
+    }
+
+    .select-btn {
+      background: #3370ff;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .select-btn:hover {
+      background: #0d4eff;
+      transform: scale(1.05);
+    }
+
+    /* 风格1: 玻璃拟态 (Glassmorphism) */
+    .glass-header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    }
+
+    /* 风格2: 新拟态 (Neumorphism) */
+    .neu-bg {
+      background: #e0e5ec;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .neu-card {
+      background: #e0e5ec;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 9px 9px 16px rgba(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+    }
+
+    /* 风格3: 渐变卡片 */
+    .gradient-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .gradient-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      border-left: 4px solid transparent;
+      border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-image-slice: 1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* 风格4: 现代极简 + 阴影 */
+    .minimal-header {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    .minimal-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+
+    .minimal-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    /* 风格5: 科技感深色 */
+    .tech-bg {
+      background: #1a1a2e;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .tech-header {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tech-card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* 风格6: 优雅渐变 */
+    .elegant-header {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      color: white;
+    }
+
+    .elegant-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 30px rgba(240, 147, 251, 0.2);
+      border: 1px solid rgba(245, 87, 108, 0.1);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎨 Design Playground</h1>
+      <p>选择你喜欢的设计风格，我会为整个网站应用这个风格</p>
+    </div>
+
+    <div class="styles-grid">
+      <!-- 风格1: 玻璃拟态 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>💎 玻璃拟态 (Glassmorphism)</h3>
+          <p>半透明背景 + 毛玻璃效果，现代时尚</p>
+        </div>
+        <div class="preview-area" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <div class="glass-header">
+            <div class="title" style="color: white;">🔥 HackerNews Trending</div>
+          </div>
+          <div class="glass-card">
+            <div class="title">#1 Show HN: New AI Tool</div>
+            <div class="meta">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="glass-card">
+            <div class="title">#2 JavaScript Performance Tips</div>
+            <div class="meta">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：玻璃拟态风格')">选择此风格</button>
+        </div>
+      </div>
+
+      <!-- 风格2: 新拟态 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>🎯 新拟态 (Neumorphism)</h3>
+          <p>柔和阴影 + 浮雕效果，独特质感</p>
+        </div>
+        <div class="preview-area neu-bg">
+          <div class="neu-card">
+            <div class="title" style="color: #333;">🔥 HackerNews Trending</div>
+          </div>
+          <div class="neu-card">
+            <div class="title" style="color: #333;">#1 Show HN: New AI Tool</div>
+            <div class="meta">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="neu-card">
+            <div class="title" style="color: #333;">#2 JavaScript Performance Tips</div>
+            <div class="meta">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：新拟态风格')">选择此风格</button>
+        </div>
+      </div>
+
+      <!-- 风格3: 渐变卡片 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>🌈 渐变活力</h3>
+          <p>紫色渐变 + 活力设计，视觉冲击</p>
+        </div>
+        <div class="preview-area" style="background: #f7f8fa;">
+          <div class="gradient-header">
+            <div class="title">🔥 HackerNews Trending</div>
+          </div>
+          <div class="gradient-card">
+            <div class="title">#1 Show HN: New AI Tool</div>
+            <div class="meta">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="gradient-card">
+            <div class="title">#2 JavaScript Performance Tips</div>
+            <div class="meta">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：渐变活力风格')">选择此风格</button>
+        </div>
+      </div>
+
+      <!-- 风格4: 现代极简 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>✨ 现代极简</h3>
+          <p>柔和阴影 + 简约设计，优雅大方</p>
+        </div>
+        <div class="preview-area" style="background: #f7f8fa;">
+          <div class="minimal-header">
+            <div class="title">🔥 HackerNews Trending</div>
+          </div>
+          <div class="minimal-card">
+            <div class="title">#1 Show HN: New AI Tool</div>
+            <div class="meta">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="minimal-card">
+            <div class="title">#2 JavaScript Performance Tips</div>
+            <div class="meta">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：现代极简风格')">选择此风格</button>
+        </div>
+      </div>
+
+      <!-- 风格5: 科技感深色 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>🌙 科技深色</h3>
+          <p>深色主题 + 科技感，专业高级</p>
+        </div>
+        <div class="preview-area tech-bg">
+          <div class="tech-header">
+            <div class="title">🔥 HackerNews Trending</div>
+          </div>
+          <div class="tech-card">
+            <div class="title">#1 Show HN: New AI Tool</div>
+            <div class="meta" style="color: #aaa;">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="tech-card">
+            <div class="title">#2 JavaScript Performance Tips</div>
+            <div class="meta" style="color: #aaa;">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：科技深色风格')">选择此风格</button>
+        </div>
+      </div>
+
+      <!-- 风格6: 优雅渐变 -->
+      <div class="style-preview">
+        <div class="style-title">
+          <h3>💖 优雅渐变</h3>
+          <p>粉紫渐变 + 柔和设计，温暖优雅</p>
+        </div>
+        <div class="preview-area" style="background: #f7f8fa;">
+          <div class="elegant-header">
+            <div class="title">🔥 HackerNews Trending</div>
+          </div>
+          <div class="elegant-card">
+            <div class="title">#1 Show HN: New AI Tool</div>
+            <div class="meta">👍 250 points • 💬 120 comments</div>
+          </div>
+          <div class="elegant-card">
+            <div class="title">#2 JavaScript Performance Tips</div>
+            <div class="meta">👍 180 points • 💬 85 comments</div>
+          </div>
+        </div>
+        <div class="style-footer">
+          <button class="select-btn" onclick="alert('已选择：优雅渐变风格')">选择此风格</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
