@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion 风格预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: #ffffff;
+      color: rgb(55, 53, 47);
+      line-height: 1.6;
+    }
+
+    /* Notion 风格的头部 */
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .logo:hover {
+      background: rgba(55, 53, 47, 0.06);
+    }
+
+    .logo-icon {
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(55, 53, 47);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      padding: 4px 10px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      color: rgba(55, 53, 47, 0.6);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-weight: 400;
+    }
+
+    .nav-btn:hover {
+      background: rgba(55, 53, 47, 0.06);
+      color: rgb(55, 53, 47);
+    }
+
+    .nav-btn.active {
+      background: rgba(55, 53, 47, 0.08);
+      color: rgb(55, 53, 47);
+      font-weight: 500;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      padding: 6px 12px 6px 32px;
+      background: rgba(242, 241, 238, 0.6);
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+      width: 200px;
+      transition: all 0.15s ease;
+      color: rgb(55, 53, 47);
+    }
+
+    .search-input:focus {
+      background: #ffffff;
+      border-color: rgba(55, 53, 47, 0.16);
+    }
+
+    .search-input::placeholder {
+      color: rgba(55, 53, 47, 0.4);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(55, 53, 47, 0.4);
+      font-size: 14px;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    /* Notion 风格的统计卡片 */
+    .stats-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      flex: 1;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid rgba(55, 53, 47, 0.09);
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      cursor: default;
+    }
+
+    .stat-card:hover {
+      background: rgba(242, 241, 238, 0.3);
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 600;
+      color: rgb(55, 53, 47);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(55, 53, 47, 0.6);
+      font-weight: 400;
+    }
+
+    /* Notion 风格的帖子卡片 */
+    .post-card {
+      background: #ffffff;
+      border: 1px solid rgba(55, 53, 47, 0.09);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .post-card:hover {
+      background: rgba(242, 241, 238, 0.3);
+    }
+
+    .post-header {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .post-rank {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(55, 53, 47, 0.4);
+      min-width: 32px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    }
+
+    .post-content {
+      flex: 1;
+    }
+
+    .post-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgb(55, 53, 47);
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .post-title-en {
+      font-size: 13px;
+      color: rgba(55, 53, 47, 0.6);
+      font-style: italic;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .post-abstract {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: rgba(242, 241, 238, 0.6);
+      border-left: 2px solid rgba(55, 53, 47, 0.16);
+      border-radius: 3px;
+      font-size: 13px;
+      color: rgba(55, 53, 47, 0.8);
+      line-height: 1.5;
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(55, 53, 47, 0.5);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(255, 107, 107, 0.1);
+      color: rgb(212, 76, 71);
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* 页面说明 */
+    .preview-note {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgb(55, 53, 47);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 300px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .preview-note h4 {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .apply-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px;
+      background: white;
+      color: rgb(55, 53, 47);
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .apply-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: scale(1.02);
+    }
+
+    .back-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Notion 风格头部 -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🔥</span>
+        <span class="logo-text">HackerNews Trending</span>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn active">💬 Most Discussed</button>
+        <button class="nav-btn">👍 Top Points</button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Search...">
+      </div>
+
+      <button class="nav-btn">🔄 Refresh</button>
+      <span style="font-size: 12px; color: rgba(55, 53, 47, 0.5);">2小时前</span>
+    </div>
+  </header>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <!-- 统计卡片 -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number">42</div>
+        <div class="stat-label">Posts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2.3k</div>
+        <div class="stat-label">Comments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">8.5k</div>
+        <div class="stat-label">Points</div>
+      </div>
+    </div>
+
+    <!-- 帖子列表 -->
+    <div class="post-list">
+      <div class="post-card">
+        <div class="post-header">
+          <span class="post-rank">#1</span>
+          <div class="post-content">
+            <div class="post-title">展示HN：我构建了一个帮助开发者的工具</div>
+            <div class="post-title-en">Show HN: I built a tool to help developers</div>
+            <div class="post-abstract">📝 这是一个非常有用的开发工具，可以帮助提高生产力。社区反馈非常积极，许多开发者表示这解决了他们长期以来的痛点。</div>
+            <div class="post-meta">
+              <span class="meta-item">👍 250 points</span>
+              <span class="meta-item">💬 120 comments</span>
+              <span class="meta-item">👤 testuser</span>
+              <span class="meta-item">🕐 2小时前</span>
+              <span class="badge">🔥 Hot</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <span class="post-rank">#2</span>
+          <div class="post-content">
+            <div class="post-title">新的JavaScript框架发布</div>
+            <div class="post-title-en">New JavaScript Framework Released</div>
+            <div class="post-meta">
+              <span class="meta-item">👍 180 points</span>
+              <span class="meta-item">💬 85 comments</span>
+              <span class="meta-item">👤 developer</span>
+              <span class="meta-item">🕐 5小时前</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <span class="post-rank">#3</span>
+          <div class="post-content">
+            <div class="post-title">如何优化 React 应用性能</div>
+            <div class="post-title-en">How to optimize React application performance</div>
+            <div class="post-meta">
+              <span class="meta-item">👍 156 points</span>
+              <span class="meta-item">💬 42 comments</span>
+              <span class="meta-item">👤 reactdev</span>
+              <span class="meta-item">🕐 8小时前</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <span class="post-rank">#4</span>
+          <div class="post-content">
+            <div class="post-title">深入理解 TypeScript 类型系统</div>
+            <div class="post-title-en">Deep dive into TypeScript type system</div>
+            <div class="post-abstract">📝 详细讲解了 TypeScript 的高级类型特性，包括条件类型、映射类型和模板字符串类型等。</div>
+            <div class="post-meta">
+              <span class="meta-item">👍 142 points</span>
+              <span class="meta-item">💬 38 comments</span>
+              <span class="meta-item">👤 tsexpert</span>
+              <span class="meta-item">🕐 12小时前</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 提示卡片 -->
+  <div class="preview-note">
+    <h4>📋 Notion 风格预览</h4>
+    <p>这是 Notion 风格的设计预览：</p>
+    <ul style="margin: 8px 0; padding-left: 20px; font-size: 12px;">
+      <li>极简干净的界面</li>
+      <li>大量留白和呼吸感</li>
+      <li>柔和的灰色调</li>
+      <li>细腻的交互反馈</li>
+      <li>专业优雅的排版</li>
+    </ul>
+    <button class="apply-btn" onclick="alert('将为整个网站应用 Notion 风格！')">✨ 应用此风格</button>
+    <button class="back-btn" onclick="window.location.href='/hackernews-cn/playground.html'">← 返回风格选择</button>
+  </div>
+
+  <script>
+    // 添加交互效果
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
