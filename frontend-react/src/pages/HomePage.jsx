@@ -3,6 +3,8 @@ import { Layout, Card, Space, Typography, Toast } from '@douyinfe/semi-ui';
 import Header from '../components/Header';
 import PostList from '../components/PostList';
 import { formatNumber } from '../utils/helpers';
+import { useTheme } from '../contexts/ThemeContext';
+import { getTheme } from '../styles/theme';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -16,6 +18,9 @@ export default function HomePage() {
   const [currentSort, setCurrentSort] = useState('comments');
   const [lastUpdate, setLastUpdate] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
+
+  const { isDark } = useTheme();
+  const theme = getTheme(isDark);
 
   // 加载数据
   useEffect(() => {
@@ -87,7 +92,7 @@ export default function HomePage() {
   const totalPoints = allPosts.reduce((sum, p) => sum + p.points, 0);
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#ffffff' }}>
+    <Layout style={{ minHeight: '100vh', background: theme.bgSecondary }}>
       <Header
         currentSort={currentSort}
         onSortChange={handleSortChange}
@@ -103,76 +108,76 @@ export default function HomePage() {
             <Card
               style={{
                 flex: 1,
-                border: '1px solid rgba(55, 53, 47, 0.09)',
+                border: `1px solid ${theme.borderPrimary}`,
                 borderRadius: '6px',
-                background: '#ffffff',
+                background: theme.bgPrimary,
                 transition: 'all 0.2s ease'
               }}
               bodyStyle={{ padding: '16px' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(242, 241, 238, 0.3)';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.12)';
+                e.currentTarget.style.background = theme.bgHover;
+                e.currentTarget.style.borderColor = theme.borderSecondary;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#ffffff';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.09)';
+                e.currentTarget.style.background = theme.bgPrimary;
+                e.currentTarget.style.borderColor = theme.borderPrimary;
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <Title heading={2} style={{ color: 'rgb(99, 102, 241)', margin: 0, fontWeight: 600, fontSize: '28px' }}>
+                <Title heading={2} style={{ color: theme.accent, margin: 0, fontWeight: 600, fontSize: '28px' }}>
                   {allPosts.length}
                 </Title>
-                <Text type="tertiary" style={{ fontSize: '12px' }}>Posts</Text>
+                <Text type="tertiary" style={{ fontSize: '12px', color: theme.textQuaternary }}>Posts</Text>
               </div>
             </Card>
             <Card
               style={{
                 flex: 1,
-                border: '1px solid rgba(55, 53, 47, 0.09)',
+                border: `1px solid ${theme.borderPrimary}`,
                 borderRadius: '6px',
-                background: '#ffffff',
+                background: theme.bgPrimary,
                 transition: 'all 0.2s ease'
               }}
               bodyStyle={{ padding: '16px' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(242, 241, 238, 0.3)';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.12)';
+                e.currentTarget.style.background = theme.bgHover;
+                e.currentTarget.style.borderColor = theme.borderSecondary;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#ffffff';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.09)';
+                e.currentTarget.style.background = theme.bgPrimary;
+                e.currentTarget.style.borderColor = theme.borderPrimary;
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <Title heading={2} style={{ color: 'rgb(99, 102, 241)', margin: 0, fontWeight: 600, fontSize: '28px' }}>
+                <Title heading={2} style={{ color: theme.accent, margin: 0, fontWeight: 600, fontSize: '28px' }}>
                   {formatNumber(totalComments)}
                 </Title>
-                <Text type="tertiary" style={{ fontSize: '12px' }}>Comments</Text>
+                <Text type="tertiary" style={{ fontSize: '12px', color: theme.textQuaternary }}>Comments</Text>
               </div>
             </Card>
             <Card
               style={{
                 flex: 1,
-                border: '1px solid rgba(55, 53, 47, 0.09)',
+                border: `1px solid ${theme.borderPrimary}`,
                 borderRadius: '6px',
-                background: '#ffffff',
+                background: theme.bgPrimary,
                 transition: 'all 0.2s ease'
               }}
               bodyStyle={{ padding: '16px' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(242, 241, 238, 0.3)';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.12)';
+                e.currentTarget.style.background = theme.bgHover;
+                e.currentTarget.style.borderColor = theme.borderSecondary;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#ffffff';
-                e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.09)';
+                e.currentTarget.style.background = theme.bgPrimary;
+                e.currentTarget.style.borderColor = theme.borderPrimary;
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <Title heading={2} style={{ color: 'rgb(99, 102, 241)', margin: 0, fontWeight: 600, fontSize: '28px' }}>
+                <Title heading={2} style={{ color: theme.accent, margin: 0, fontWeight: 600, fontSize: '28px' }}>
                   {formatNumber(totalPoints)}
                 </Title>
-                <Text type="tertiary" style={{ fontSize: '12px' }}>Points</Text>
+                <Text type="tertiary" style={{ fontSize: '12px', color: theme.textQuaternary }}>Points</Text>
               </div>
             </Card>
           </div>

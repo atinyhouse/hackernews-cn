@@ -1,11 +1,16 @@
 import { Card, Tag, Space, Typography } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
 import { formatTime } from '../utils/helpers';
+import { useTheme } from '../contexts/ThemeContext';
+import { getTheme } from '../styles/theme';
 
 const { Text } = Typography;
 
 export default function PostCard({ post, rank }) {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
+  const theme = getTheme(isDark);
+
   const isHot = post.comment_count > 100;
   const timeAgo = formatTime(post.created_at);
 
@@ -15,11 +20,12 @@ export default function PostCard({ post, rank }) {
 
   const cardStyle = {
     cursor: 'pointer',
-    border: '1px solid rgba(55, 53, 47, 0.09)',
+    border: `1px solid ${theme.borderPrimary}`,
     borderRadius: '6px',
     marginBottom: '8px',
     transition: 'all 0.2s ease',
-    position: 'relative'
+    position: 'relative',
+    background: theme.bgPrimary
   };
 
   return (
@@ -29,14 +35,14 @@ export default function PostCard({ post, rank }) {
       style={cardStyle}
       bodyStyle={{ padding: '16px' }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'rgba(242, 241, 238, 0.3)';
-        e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.12)';
+        e.currentTarget.style.background = theme.bgHover;
+        e.currentTarget.style.borderColor = theme.borderSecondary;
         const leftBorder = e.currentTarget.querySelector('.left-border');
         if (leftBorder) leftBorder.style.opacity = '1';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = '#ffffff';
-        e.currentTarget.style.borderColor = 'rgba(55, 53, 47, 0.09)';
+        e.currentTarget.style.background = theme.bgPrimary;
+        e.currentTarget.style.borderColor = theme.borderPrimary;
         const leftBorder = e.currentTarget.querySelector('.left-border');
         if (leftBorder) leftBorder.style.opacity = '0';
       }}
@@ -49,7 +55,7 @@ export default function PostCard({ post, rank }) {
           top: 0,
           bottom: 0,
           width: '3px',
-          background: 'rgb(99, 102, 241)',
+          background: theme.accent,
           opacity: 0,
           transition: 'opacity 0.2s ease',
           borderRadius: '6px 0 0 6px'
@@ -60,7 +66,7 @@ export default function PostCard({ post, rank }) {
         <div style={{
           fontSize: '14px',
           fontWeight: 500,
-          color: 'rgba(55, 53, 47, 0.4)',
+          color: theme.textMuted,
           minWidth: '32px',
           fontFamily: 'SF Mono, Monaco, Cascadia Code, monospace'
         }}>
@@ -73,13 +79,13 @@ export default function PostCard({ post, rank }) {
               <div style={{
                 fontSize: '14px',
                 fontWeight: 500,
-                color: 'rgb(55, 53, 47)',
+                color: theme.textPrimary,
                 marginBottom: '6px',
                 lineHeight: 1.5
               }}>
                 {post.title_cn}
               </div>
-              <Text type="tertiary" size="small" style={{ fontStyle: 'italic' }}>
+              <Text type="tertiary" size="small" style={{ fontStyle: 'italic', color: theme.textTertiary }}>
                 {post.title}
               </Text>
             </>
@@ -87,7 +93,7 @@ export default function PostCard({ post, rank }) {
             <div style={{
               fontSize: '14px',
               fontWeight: 500,
-              color: 'rgb(55, 53, 47)',
+              color: theme.textPrimary,
               lineHeight: 1.5
             }}>
               {post.title}
@@ -98,18 +104,18 @@ export default function PostCard({ post, rank }) {
             <div style={{
               marginTop: '8px',
               padding: '10px 12px',
-              background: 'rgba(242, 241, 238, 0.6)',
-              borderLeft: '2px solid rgba(99, 102, 241, 0.3)',
+              background: theme.bgTertiary,
+              borderLeft: `2px solid ${theme.borderAccent}`,
               borderRadius: '3px',
               fontSize: '13px',
-              color: 'rgba(55, 53, 47, 0.8)',
+              color: theme.textSecondary,
               lineHeight: 1.5
             }}>
               📝 {post.abstract}
             </div>
           )}
 
-          <Space wrap style={{ marginTop: '8px', fontSize: '12px', color: 'rgba(55, 53, 47, 0.5)' }}>
+          <Space wrap style={{ marginTop: '8px', fontSize: '12px', color: theme.textQuaternary }}>
             <span>👍 {post.points} points</span>
             <span>💬 {post.comment_count} comments</span>
             <span>👤 {post.author}</span>
@@ -118,8 +124,8 @@ export default function PostCard({ post, rank }) {
               <Tag
                 size="small"
                 style={{
-                  background: 'rgba(255, 107, 107, 0.1)',
-                  color: 'rgb(212, 76, 71)',
+                  background: theme.tagBg,
+                  color: theme.tagText,
                   border: 'none',
                   fontSize: '11px',
                   fontWeight: 500

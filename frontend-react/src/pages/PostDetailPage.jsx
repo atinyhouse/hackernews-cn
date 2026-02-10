@@ -4,6 +4,8 @@ import { Layout, Card, Button, Space, Typography, Spin, Toast, Descriptions } fr
 import { IconArrowLeft } from '@douyinfe/semi-icons';
 import CommentTree from '../components/CommentTree';
 import { formatTime, buildCommentTree } from '../utils/helpers';
+import { useTheme } from '../contexts/ThemeContext';
+import { getTheme } from '../styles/theme';
 
 const { Content } = Layout;
 const { Title, Text, Link } = Typography;
@@ -16,6 +18,9 @@ export default function PostDetailPage() {
   const [post, setPost] = useState(null);
   const [commentTree, setCommentTree] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { isDark } = useTheme();
+  const theme = getTheme(isDark);
 
   useEffect(() => {
     loadPost();
@@ -57,7 +62,7 @@ export default function PostDetailPage() {
 
   if (loading) {
     return (
-      <Layout style={{ minHeight: '100vh', background: '#ffffff' }}>
+      <Layout style={{ minHeight: '100vh', background: theme.bgSecondary }}>
         <Content style={{ padding: '24px' }}>
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <Spin size="large" tip="Loading..." />
@@ -74,7 +79,7 @@ export default function PostDetailPage() {
   const timeAgo = formatTime(post.created_at);
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#ffffff' }}>
+    <Layout style={{ minHeight: '100vh', background: theme.bgSecondary }}>
       <Content style={{ padding: '48px 24px' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           {/* 返回按钮 */}
@@ -83,8 +88,9 @@ export default function PostDetailPage() {
             onClick={() => navigate('/')}
             style={{
               marginBottom: '16px',
-              color: 'rgba(55, 53, 47, 0.6)',
-              border: '1px solid rgba(55, 53, 47, 0.09)'
+              color: theme.textTertiary,
+              border: `1px solid ${theme.borderPrimary}`,
+              background: theme.bgPrimary
             }}
             size="small"
           >
@@ -97,19 +103,20 @@ export default function PostDetailPage() {
             title={
               <div>
                 {post.title_cn && (
-                  <Title heading={4} style={{ marginBottom: '8px', color: 'rgb(55, 53, 47)', fontWeight: 600, fontSize: '18px' }}>
+                  <Title heading={4} style={{ marginBottom: '8px', color: theme.textPrimary, fontWeight: 600, fontSize: '18px' }}>
                     {post.title_cn}
                   </Title>
                 )}
-                <Text type="tertiary" style={{ fontStyle: 'italic', fontSize: '13px' }}>
+                <Text type="tertiary" style={{ fontStyle: 'italic', fontSize: '13px', color: theme.textTertiary }}>
                   {post.title}
                 </Text>
               </div>
             }
             style={{
               marginBottom: '24px',
-              border: '1px solid rgba(55, 53, 47, 0.09)',
-              borderRadius: '6px'
+              border: `1px solid ${theme.borderPrimary}`,
+              borderRadius: '6px',
+              background: theme.bgPrimary
             }}
           >
             <Descriptions
@@ -121,7 +128,7 @@ export default function PostDetailPage() {
                 {
                   key: '🔗 原文链接',
                   value: (
-                    <Link href={post.url} target="_blank" style={{ color: 'rgb(99, 102, 241)' }}>
+                    <Link href={post.url} target="_blank" style={{ color: theme.accent }}>
                       访问原文 ↗
                     </Link>
                   )
@@ -129,18 +136,18 @@ export default function PostDetailPage() {
               ]}
               row
               size="small"
-              style={{ fontSize: '13px' }}
+              style={{ fontSize: '13px', color: theme.textSecondary }}
             />
 
             {post.abstract && (
               <div style={{
                 marginTop: '16px',
                 padding: '10px 12px',
-                background: 'rgba(242, 241, 238, 0.6)',
-                borderLeft: '2px solid rgba(99, 102, 241, 0.3)',
+                background: theme.bgTertiary,
+                borderLeft: `2px solid ${theme.borderAccent}`,
                 borderRadius: '3px',
                 fontSize: '13px',
-                color: 'rgba(55, 53, 47, 0.8)',
+                color: theme.textSecondary,
                 lineHeight: 1.5
               }}>
                 📝 {post.abstract}
@@ -154,12 +161,13 @@ export default function PostDetailPage() {
             title={
               <Space>
                 <span>💬</span>
-                <Text strong style={{ fontSize: '14px' }}>评论</Text>
+                <Text strong style={{ fontSize: '14px', color: theme.textPrimary }}>评论</Text>
               </Space>
             }
             style={{
-              border: '1px solid rgba(55, 53, 47, 0.09)',
-              borderRadius: '6px'
+              border: `1px solid ${theme.borderPrimary}`,
+              borderRadius: '6px',
+              background: theme.bgPrimary
             }}
           >
             <CommentTree comments={commentTree} />

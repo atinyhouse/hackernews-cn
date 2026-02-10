@@ -1,6 +1,8 @@
 import { Layout, Button, Input, Space, Typography, Tag } from '@douyinfe/semi-ui';
-import { IconSearch, IconRefresh, IconComment, IconLikeHeart } from '@douyinfe/semi-icons';
+import { IconSearch, IconRefresh, IconComment, IconLikeHeart, IconMoon, IconSun } from '@douyinfe/semi-icons';
 import { formatTime } from '../utils/helpers';
+import { useTheme } from '../contexts/ThemeContext';
+import { getTheme } from '../styles/theme';
 
 const { Header: SemiHeader } = Layout;
 const { Title } = Typography;
@@ -12,11 +14,14 @@ export default function Header({
   lastUpdate,
   onRefresh
 }) {
+  const { isDark, toggleTheme } = useTheme();
+  const theme = getTheme(isDark);
+
   return (
     <SemiHeader
       style={{
-        background: '#ffffff',
-        borderBottom: '1px solid rgba(55, 53, 47, 0.09)',
+        background: theme.bgPrimary,
+        borderBottom: `1px solid ${theme.borderPrimary}`,
         padding: '12px 24px',
       }}
     >
@@ -39,11 +44,11 @@ export default function Header({
           transition: 'background 0.15s ease'
         }}
              onClick={() => window.location.reload()}
-             onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(55, 53, 47, 0.06)'}
+             onMouseEnter={(e) => e.currentTarget.style.background = theme.bgHover}
              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
           <span style={{ fontSize: '20px' }}>🔥</span>
           <Title heading={5} style={{
-            color: 'rgb(55, 53, 47)',
+            color: theme.textPrimary,
             margin: 0,
             fontWeight: 600,
             fontSize: '14px'
@@ -59,8 +64,8 @@ export default function Header({
             icon={<IconComment />}
             onClick={() => onSortChange('comments')}
             style={{
-              color: currentSort === 'comments' ? 'rgb(99, 102, 241)' : 'rgba(55, 53, 47, 0.6)',
-              background: currentSort === 'comments' ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+              color: currentSort === 'comments' ? theme.accent : theme.textTertiary,
+              background: currentSort === 'comments' ? `${theme.accent}1a` : 'transparent',
               fontSize: '13px',
               fontWeight: currentSort === 'comments' ? 500 : 400,
               padding: '4px 10px',
@@ -75,8 +80,8 @@ export default function Header({
             icon={<IconLikeHeart />}
             onClick={() => onSortChange('points')}
             style={{
-              color: currentSort === 'points' ? 'rgb(99, 102, 241)' : 'rgba(55, 53, 47, 0.6)',
-              background: currentSort === 'points' ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+              color: currentSort === 'points' ? theme.accent : theme.textTertiary,
+              background: currentSort === 'points' ? `${theme.accent}1a` : 'transparent',
               fontSize: '13px',
               fontWeight: currentSort === 'points' ? 500 : 400,
               padding: '4px 10px',
@@ -88,14 +93,15 @@ export default function Header({
         </Space>
 
         <Input
-          prefix={<IconSearch style={{ color: 'rgba(55, 53, 47, 0.4)' }} />}
+          prefix={<IconSearch style={{ color: theme.textMuted }} />}
           placeholder="Search..."
           size="small"
           style={{
             width: 200,
-            background: 'rgba(242, 241, 238, 0.6)',
+            background: theme.bgTertiary,
             border: '1px solid transparent',
-            fontSize: '13px'
+            fontSize: '13px',
+            color: theme.textPrimary
           }}
           onEnterPress={onSearch}
           onChange={(value) => !value && onSearch('')}
@@ -104,10 +110,24 @@ export default function Header({
         <Button
           theme="borderless"
           size="small"
+          icon={isDark ? <IconSun /> : <IconMoon />}
+          onClick={toggleTheme}
+          style={{
+            color: theme.textTertiary,
+            fontSize: '13px',
+            padding: '4px 10px'
+          }}
+        >
+          {isDark ? 'Light' : 'Dark'}
+        </Button>
+
+        <Button
+          theme="borderless"
+          size="small"
           icon={<IconRefresh />}
           onClick={onRefresh}
           style={{
-            color: 'rgba(55, 53, 47, 0.6)',
+            color: theme.textTertiary,
             fontSize: '13px',
             padding: '4px 10px'
           }}
@@ -121,7 +141,7 @@ export default function Header({
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'rgba(55, 53, 47, 0.5)',
+              color: theme.textQuaternary,
               fontSize: '12px',
               padding: '2px 6px'
             }}
