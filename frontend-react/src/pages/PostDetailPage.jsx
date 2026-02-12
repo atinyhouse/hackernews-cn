@@ -125,7 +125,7 @@ export default function PostDetailPage() {
                 { key: '💬 评论数', value: post.comment_count },
                 { key: '👤 作者', value: post.author },
                 { key: '🕐 发布时间', value: timeAgo },
-                {
+                post.url && {
                   key: '🔗 原文链接',
                   value: (
                     <Link href={post.url} target="_blank" style={{ color: theme.accent }}>
@@ -133,7 +133,7 @@ export default function PostDetailPage() {
                     </Link>
                   )
                 }
-              ]}
+              ].filter(Boolean)}
               row
               size="small"
               style={{ fontSize: '13px', color: theme.textSecondary }}
