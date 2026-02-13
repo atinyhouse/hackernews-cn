@@ -29,7 +29,7 @@ function CommentItem({ comment, isReply = false }) {
           marginBottom: '8px'
         }}>
           <Text strong style={{ color: theme.textPrimary, fontSize: '13px', fontWeight: 500 }}>
-            {comment.author}
+            {comment.author || '匿名用户'}
           </Text>
           <Text type="tertiary" size="small" style={{ fontSize: '12px', color: theme.textTertiary }}>
             {timeAgo}
@@ -41,17 +41,19 @@ function CommentItem({ comment, isReply = false }) {
             <Paragraph style={{ marginBottom: '8px', color: theme.textPrimary, fontSize: '13px', lineHeight: 1.5 }}>
               {comment.content_cn}
             </Paragraph>
-            <Paragraph
-              type="tertiary"
-              size="small"
-              style={{ fontStyle: 'italic', marginBottom: 0, fontSize: '12px', color: theme.textTertiary }}
-            >
-              {comment.content}
-            </Paragraph>
+            {comment.content && (
+              <Paragraph
+                type="tertiary"
+                size="small"
+                style={{ fontStyle: 'italic', marginBottom: 0, fontSize: '12px', color: theme.textTertiary }}
+              >
+                {comment.content}
+              </Paragraph>
+            )}
           </>
         ) : (
           <Paragraph style={{ marginBottom: 0, color: theme.textPrimary, fontSize: '13px', lineHeight: 1.5 }}>
-            {comment.content}
+            {comment.content || '[已删除]'}
           </Paragraph>
         )}
       </Card>

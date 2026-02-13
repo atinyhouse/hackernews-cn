@@ -107,9 +107,11 @@ export default function PostDetailPage() {
                     {post.title_cn}
                   </Title>
                 )}
-                <Text type="tertiary" style={{ fontStyle: 'italic', fontSize: '13px', color: theme.textTertiary }}>
-                  {post.title}
-                </Text>
+                {post.title && (
+                  <Text type="tertiary" style={{ fontStyle: 'italic', fontSize: '13px', color: theme.textTertiary }}>
+                    {post.title}
+                  </Text>
+                )}
               </div>
             }
             style={{
@@ -121,9 +123,9 @@ export default function PostDetailPage() {
           >
             <Descriptions
               data={[
-                { key: '👍 点赞数', value: post.points },
-                { key: '💬 评论数', value: post.comment_count },
-                { key: '👤 作者', value: post.author },
+                { key: '👍 点赞数', value: post.points || 0 },
+                { key: '💬 评论数', value: post.comment_count || 0 },
+                { key: '👤 作者', value: post.author || '匿名' },
                 { key: '🕐 发布时间', value: timeAgo },
                 post.url && {
                   key: '🔗 原文链接',
