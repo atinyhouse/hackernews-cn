@@ -1,5 +1,9 @@
 // 格式化时间
 export function formatTime(timestamp) {
+  if (!timestamp || isNaN(timestamp)) {
+    return '未知时间';
+  }
+
   const now = Date.now();
   const diff = now - timestamp;
 
@@ -14,6 +18,9 @@ export function formatTime(timestamp) {
 
 // 格式化数字
 export function formatNumber(num) {
+  if (num == null || isNaN(num)) {
+    return '0';
+  }
   if (num >= 1000) {
     return (num / 1000).toFixed(1) + 'k';
   }
@@ -22,19 +29,27 @@ export function formatNumber(num) {
 
 // 构建评论树
 export function buildCommentTree(comments) {
+  if (!comments || comments.length === 0) {
+    return [];
+  }
+
   const commentMap = {};
   const rootComments = [];
 
   // 创建评论映射
   comments.forEach(comment => {
-    commentMap[comment.hn_comment_id] = {
-      ...comment,
-      children: []
-    };
+    if (comment && comment.hn_comment_id) {
+      commentMap[comment.hn_comment_id] = {
+        ...comment,
+        children: []
+      };
+    }
   });
 
   // 构建树结构
   comments.forEach(comment => {
+    if (!comment || !comment.hn_comment_id) return;
+
     if (comment.parent_id && commentMap[comment.parent_id]) {
       commentMap[comment.parent_id].children.push(commentMap[comment.hn_comment_id]);
     } else {
