@@ -9,7 +9,7 @@ import { getTheme } from '../styles/theme';
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const DATA_FILE = import.meta.env.BASE_URL + 'data/posts.json';
+const DATA_FILE = '/hackernews-cn/data/posts.json';
 
 export default function HomePage() {
   const [allPosts, setAllPosts] = useState([]);

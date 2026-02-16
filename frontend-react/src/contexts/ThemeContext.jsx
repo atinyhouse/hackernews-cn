@@ -1,6 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const ThemeContext = createContext();
+const defaultValue = {
+  isDark: false,
+  toggleTheme: () => {}
+};
+
+const ThemeContext = createContext(defaultValue);
 
 export function ThemeProvider({ children }) {
   const [isDark, setIsDark] = useState(() => {
@@ -34,8 +39,5 @@ export function ThemeProvider({ children }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within ThemeProvider');
-  }
   return context;
 }

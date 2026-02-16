@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Layout, Card, Button, Space, Typography, Spin, Toast, Descriptions } from '@douyinfe/semi-ui';
+import { Layout, Card, Button, Space, Typography, Spin, Toast } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
 import CommentTree from '../components/CommentTree';
 import { formatTime, buildCommentTree } from '../utils/helpers';
@@ -8,9 +8,9 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getTheme } from '../styles/theme';
 
 const { Content } = Layout;
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
-const DATA_FILE = import.meta.env.BASE_URL + 'data/posts.json';
+const DATA_FILE = '/hackernews-cn/data/posts.json';
 
 export default function PostDetailPage() {
   const { id } = useParams();
@@ -121,25 +121,20 @@ export default function PostDetailPage() {
               background: theme.bgPrimary
             }}
           >
-            <Descriptions
-              data={[
-                { key: '👍 点赞数', value: post.points || 0 },
-                { key: '💬 评论数', value: post.comment_count || 0 },
-                { key: '👤 作者', value: post.author || '匿名' },
-                { key: '🕐 发布时间', value: timeAgo },
-                post.url && {
-                  key: '🔗 原文链接',
-                  value: (
-                    <Link href={post.url} target="_blank" style={{ color: theme.accent }}>
-                      访问原文 ↗
-                    </Link>
-                  )
-                }
-              ].filter(Boolean)}
-              row
-              size="small"
-              style={{ fontSize: '13px', color: theme.textSecondary }}
-            />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', fontSize: '13px', color: theme.textSecondary }}>
+              <div>👍 点赞数: <Text strong>{post.points || 0}</Text></div>
+              <div>💬 评论数: <Text strong>{post.comment_count || 0}</Text></div>
+              <div>👤 作者: <Text strong>{post.author || '匿名'}</Text></div>
+              <div>🕐 发布时间: <Text strong>{timeAgo}</Text></div>
+              {post.url && (
+                <div>
+                  🔗 原文链接:{' '}
+                  <a href={post.url} target="_blank" rel="noopener noreferrer" style={{ color: theme.accent, textDecoration: 'none' }}>
+                    访问原文 ↗
+                  </a>
+                </div>
+              )}
+            </div>
 
             {post.abstract && (
               <div style={{
