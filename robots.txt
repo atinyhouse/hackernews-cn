@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://atinyhouse.github.io/hackernews-cn/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
