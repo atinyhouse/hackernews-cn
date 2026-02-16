@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Layout, Card, Button, Space, Typography, Spin, Toast } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
 import CommentTree from '../components/CommentTree';
@@ -77,9 +78,30 @@ export default function PostDetailPage() {
   }
 
   const timeAgo = formatTime(post.created_at);
+  const pageTitle = `${post.title_cn || post.title} - HackerNews 中文热议榜`;
+  const pageDescription = post.abstract || (post.title_cn || post.title);
+  const pageUrl = `https://atinyhouse.github.io/hackernews-cn/#/post/${id}`;
 
   return (
-    <Layout style={{ minHeight: '100vh', background: theme.bgSecondary }}>
+    <>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={pageUrl} />
+
+        {/* Open Graph */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:type" content="article" />
+        {post.url && <meta property="og:article:published_time" content={new Date(post.created_at).toISOString()} />}
+
+        {/* Twitter */}
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Helmet>
+
+      <Layout style={{ minHeight: '100vh', background: theme.bgSecondary }}>
       <Content style={{ padding: '48px 24px' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           {/* 返回按钮 */}
@@ -172,5 +194,6 @@ export default function PostDetailPage() {
         </div>
       </Content>
     </Layout>
+    </>
   );
 }
